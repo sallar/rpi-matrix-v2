@@ -1,0 +1,19 @@
+{
+  "name": "rpi-matrix-v2",
+  "module": "index.ts",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "latest",
+    "@types/rsync": "^0.4.36",
+    "chalk": "^5.4.1",
+    "rsync": "^0.6.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "sync": "bun sync.ts",
+    "build": "bun build --compile --target=bun-linux-arm64 ./src/index.ts --outfile build/clock"
+  },
+  "type": "module"
+}
