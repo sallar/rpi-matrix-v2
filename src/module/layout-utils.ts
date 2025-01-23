@@ -1,4 +1,4 @@
-import { type FontInstance } from './custom-types';
+import type { FontInstance } from "./custom-types";
 
 export interface Glyph {
   h: number;
@@ -14,12 +14,12 @@ export interface MappedGlyph extends Glyph {
 export type Word = Glyph[];
 export type Line = Word[];
 
-const isSeparator = ({ char }: Glyph) => char === ' ';
+const isSeparator = ({ char }: Glyph) => char === " ";
 
 const glphysToWords = (glphys: Glyph[]): Word[] => {
   const index = glphys
     .map((g, i) => (i === 0 && isSeparator(g) ? null : g.char))
-    .indexOf(' ');
+    .indexOf(" ");
 
   return index > 0
     ? [glphys.slice(0, index), ...glphysToWords(glphys.slice(index))]
@@ -33,13 +33,14 @@ const wordsToLines = (maxWidth: number, words: Word[]): Line[] => {
   let tmpLine: Line = [];
   let tmpLineWidth = 0;
 
+  // biome-ignore lint/complexity/noForEach: <explanation>
   words
     .filter(({ length }) => length > 0)
-    .forEach(word => {
+    .forEach((word) => {
       const wordWidth = calcWordWidth(word);
       if (tmpLineWidth + wordWidth > maxWidth) {
         lines.push(tmpLine);
-        const firstWord = word.filter(g => !isSeparator(g));
+        const firstWord = word.filter((g) => !isSeparator(g));
         tmpLine = [firstWord];
         tmpLineWidth = calcWordWidth(firstWord);
       } else {
@@ -54,21 +55,22 @@ const wordsToLines = (maxWidth: number, words: Word[]): Line[] => {
 };
 
 export enum HorizontalAlignment {
-  Left = 'left',
-  Center = 'center',
-  Right = 'right',
+  Left = "left",
+  Center = "center",
+  Right = "right",
 }
 
 export enum VerticalAlignment {
-  Bottom = 'bottom',
-  Middle = 'middle',
-  Top = 'top',
+  Bottom = "bottom",
+  Middle = "middle",
+  Top = "top",
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class LayoutUtils {
   static textToLines(font: FontInstance, maxW: number, text: string): Line[] {
     const fontHeight = font.height();
-    const glphys = text.split('').map(char => ({
+    const glphys = text.split("").map((char) => ({
       char,
       h: fontHeight,
       w: font.stringWidth(char),
@@ -83,7 +85,7 @@ export class LayoutUtils {
     containerW: number,
     containerH: number,
     alignH = HorizontalAlignment.Center,
-    alignV = VerticalAlignment.Middle
+    alignV = VerticalAlignment.Middle,
   ): MappedGlyph[] {
     const blockH = lineH * lines.length;
 
@@ -98,35 +100,39 @@ export class LayoutUtils {
       }
     })();
 
-    return lines
-      .map((words, i) => {
-        const lineGlyphs = words.reduce(
-          (glyphs, word) => [...glyphs, ...word],
-          []
-        );
-        const lineW = calcWordWidth(lineGlyphs);
-        let offsetX = (() => {
-          switch (alignH) {
-            case HorizontalAlignment.Left:
-              return 0;
-            case HorizontalAlignment.Center:
-              return Math.floor((containerW - lineW) / 2);
-            case HorizontalAlignment.Right:
-              return containerW - lineW;
-          }
-        })();
+    return (
+      lines
+        .map((words, i) => {
+          const lineGlyphs = words.reduce(
+            // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
+            (glyphs, word) => [...glyphs, ...word],
+            [],
+          );
+          const lineW = calcWordWidth(lineGlyphs);
+          let offsetX = (() => {
+            switch (alignH) {
+              case HorizontalAlignment.Left:
+                return 0;
+              case HorizontalAlignment.Center:
+                return Math.floor((containerW - lineW) / 2);
+              case HorizontalAlignment.Right:
+                return containerW - lineW;
+            }
+          })();
 
-        return lineGlyphs.map(glyph => {
-          const mapped = {
-            ...glyph,
-            x: offsetX,
-            y: offsetY + i * lineH,
-          };
-          offsetX += glyph.w;
+          return lineGlyphs.map((glyph) => {
+            const mapped = {
+              ...glyph,
+              x: offsetX,
+              y: offsetY + i * lineH,
+            };
+            offsetX += glyph.w;
 
-          return mapped;
-        });
-      })
-      .reduce((glyphs, words) => [...glyphs, ...words], []);
+            return mapped;
+          });
+        })
+        // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
+        .reduce((glyphs, words) => [...glyphs, ...words], [])
+    );
   }
 }

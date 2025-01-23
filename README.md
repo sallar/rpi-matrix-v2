@@ -1,4 +1,6 @@
-# rpi-matrix-v2
+# Raspberry PI Matrix
+
+![](matrix.png)
 
 To install dependencies:
 
@@ -17,3 +19,7 @@ To sync:
 ```bash
 bun run sync
 ```
+
+## CAD Files
+
+STEP and STL files are available in `cad` directory.
