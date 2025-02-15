@@ -1,4 +1,4 @@
-import { run } from "./apps/analog-clock";
+import { run } from "./apps/letter-clock";
 import { GpioMapping, LedMatrix } from "./module";
 
 const matrix = new LedMatrix(
