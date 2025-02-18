@@ -1,7 +1,7 @@
 import { Font, type LedMatrixInstance } from "../module";
 import { wait } from "../utils";
 
-const myFont = new Font("myFont", "./fonts/4x6.bdf");
+const font = new Font("font", "./fonts/4x6.bdf");
 
 /**
  * Convert fraction f ∈ [0, 1) to a point (x, y) along the rectangle's perimeter
@@ -104,7 +104,7 @@ function drawRectangularClock(matrix: LedMatrixInstance): void {
   matrix.fgColor(0xffff00); // yellow for second
   matrix.drawLine(cx, cy, sxFinal, syFinal);
 
-  // (Optional) Draw 12 hour markers on the perimeter
+  // Draw 12 hour markers on the perimeter
   for (let i = 0; i < 12; i++) {
     const frac = i / 12;
     const [px, py] = perimeterPointTopCenter(frac, w, h);
@@ -117,30 +117,18 @@ function drawRectangularClock(matrix: LedMatrixInstance): void {
     matrix.drawLine(px, py, tx, ty);
   }
 
-  // --- NEW: Write the current date in the center ---
-  // 1) Switch to your loaded font
-  matrix.font(myFont);
-
-  // 2) Create a date string. For instance, "YYYY-MM-DD" or a locale string
+  matrix.font(font);
   const dateStr = now.toLocaleDateString("fi-FI", {
     month: "2-digit",
     day: "2-digit",
   });
-  // Example output: "01/23/2025"
 
-  // 3) Pick coordinates so it's near the "9 o'clock" side, but not interfering
-  //    with the hour hand around 2 AM. Let's just put it top-left-ish for safety.
-  //    Adjust xDate, yDate as you like.
   const xDate = 6;
   const yDate = 14;
 
-  // 4) Set a color for the text (white)
   matrix.fgColor(0xffffff);
-
-  // 5) Draw the date text
   matrix.drawText(dateStr, xDate, yDate);
 
-  // Commit the updates
   matrix.sync();
 }
 

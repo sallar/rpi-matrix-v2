@@ -16,7 +16,7 @@ const rsync = Rsync.build({
   shell: "ssh",
   flags: "ahP",
   recursive: true,
-  source: ["./build/clock"],
+  source: ["./build/clock", "./src/module/fonts"],
   destination: `${username}@${hostname}:${directory}`,
 });
 
