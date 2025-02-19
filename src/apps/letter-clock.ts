@@ -2,16 +2,19 @@ import { Font, type LedMatrixInstance } from "../module";
 import { wait } from "../utils";
 
 const bigFont = new Font("myFont", "./fonts/7x14B.bdf");
-const smallFont = new Font("smallFont", "./fonts/6x13.bdf");
+// const smallFont = new Font("smallFont", "./fonts/5x8.bdf");
+const smallFont = new Font("smallFont", "./fonts/spleen-5x8.bdf");
 
 const FONT_WIDTH = 7;
 const FONT_HEIGHT = 14;
 
-const SMALL_FONT_WIDTH = 6;
-const SMALL_FONT_HEIGHT = 13;
+const SMALL_FONT_WIDTH = 5;
+const SMALL_FONT_HEIGHT = 8;
 
 const dayFormatter = new Intl.DateTimeFormat("en-US", {
-  weekday: "long",
+  weekday: "short",
+  month: "short",
+  day: "numeric",
 });
 
 const timeFormatter = new Intl.DateTimeFormat("en-US", {
@@ -35,7 +38,7 @@ function drawTextClock(matrix: LedMatrixInstance) {
 
   const dayLineX = (matrix.width() - dayLineWidth) / 2; 
   const timeLineX = (matrix.width() - timeLineWidth) / 2;
-  const initialY = matrix.height() - (FONT_HEIGHT + SMALL_FONT_HEIGHT) - 3;
+  const initialY = matrix.height() - (FONT_HEIGHT + SMALL_FONT_HEIGHT) - 5;
 
   matrix.fgColor({ r: 255, g: 220, b: 0 });
   
